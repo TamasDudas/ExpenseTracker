@@ -3,10 +3,16 @@ import { Button } from './ui/button';
 
 interface ExpenseListProps {
  expenses: Expense[];
+ editingExpense?: Expense | null;
  onDelete?: (id: string) => void;
+ onEdit?: (expense: Expense) => void;
 }
 
-export default function ExpenseList({ expenses, onDelete }: ExpenseListProps) {
+export default function ExpenseList({
+ expenses,
+ onDelete,
+ onEdit,
+}: ExpenseListProps) {
  return (
   <div>
    {expenses.map((expense) => (
@@ -24,6 +30,9 @@ export default function ExpenseList({ expenses, onDelete }: ExpenseListProps) {
        onClick={() => onDelete?.(expense.id)}
       >
        Törlés
+      </Button>
+      <Button variant="outline" size="sm" onClick={() => onEdit?.(expense)}>
+       Szerkesztés
       </Button>
      </div>
     </div>

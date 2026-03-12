@@ -21,12 +21,21 @@ import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { categories } from '../../constants';
 import { useForm, Controller, type SubmitHandler } from 'react-hook-form';
 import type { Expense } from '@/types/type';
+import { useEffect } from 'react';
 
 interface ExpenseFormProps {
  onAdd: (expense: Expense) => void;
+ onUpdate: (expense: Expense) => void;
+ editingExpense?: Expense | null;
 }
 
-export default function ExpenseForm({ onAdd }: ExpenseFormProps) {
+export default function ExpenseForm({
+ onAdd,
+ onUpdate,
+ editingExpense,
+}: ExpenseFormProps) {
+ const isEditing = !!editingExpense;
+
  const {
   register,
   handleSubmit,
@@ -34,7 +43,7 @@ export default function ExpenseForm({ onAdd }: ExpenseFormProps) {
   formState: { errors },
   reset,
  } = useForm<Expense>({
-  defaultValues: { category: 'Egyéb', type: 'expense' },
+  defaultValues: editingExpense || { category: 'Egyéb', type: 'expense' },
  });
 
  const onSubmit: SubmitHandler<Expense> = (data) => {
@@ -43,16 +52,32 @@ export default function ExpenseForm({ onAdd }: ExpenseFormProps) {
    id: crypto.randomUUID(),
    date: new Date().toISOString().split('T')[0], // YYYY-MM-DD formátum
   };
-  onAdd(newExpense);
+  if (!isEditing) {
+   onAdd(newExpense);
+  } else {
+   onUpdate({ ...newExpense, id: editingExpense?.id });
+   reset(newExpense);
+  }
   reset();
  };
+
+ //Itt állítjuk be a form értékeit, amikor az editingExpense változik. Ha van editingExpense, akkor annak értékeivel töltjük fel a formot, különben visszaállítjuk az alapértelmez
+ useEffect(() => {
+  if (editingExpense) {
+   reset(editingExpense);
+  } else {
+   reset({ category: 'Egyéb', type: 'expense' });
+  }
+ }, [editingExpense, reset]);
 
  return (
   <div className="w-full my-8">
    <form className="max-w-3xl mx-auto" onSubmit={handleSubmit(onSubmit)}>
     <FieldGroup>
      <FieldSet>
-      <FieldLegend>Add expense and income</FieldLegend>
+      <FieldLegend>
+       {isEditing ? 'Edit expense and income' : 'Add expense and income'}
+      </FieldLegend>
       <FieldGroup>
        <Field>
         <FieldLabel htmlFor="name">Name:</FieldLabel>
@@ -159,7 +184,7 @@ export default function ExpenseForm({ onAdd }: ExpenseFormProps) {
      <FieldSeparator />
 
      <Field orientation="horizontal">
-      <Button type="submit">Submit</Button>
+      <Button type="submit">{isEditing ? 'Update' : 'Submit'}</Button>
       <Button variant="outline" type="button">
        Cancel
       </Button>

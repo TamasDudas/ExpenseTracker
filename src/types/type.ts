@@ -19,4 +19,4 @@ export type Category =
 export type Action =
  | { type: 'ADD_EXPENSE'; payload: Expense }
  | { type: 'DELETE_EXPENSE'; payload: string }
- | { type: 'EDIT_EXPENSE'; payload: Expense };
+ | { type: 'UPDATE_EXPENSE'; payload: Expense };
