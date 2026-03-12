@@ -22,7 +22,11 @@ import { categories } from '../../constants';
 import { useForm, Controller, type SubmitHandler } from 'react-hook-form';
 import type { Expense } from '@/types/type';
 
-export default function ExpenseForm() {
+interface ExpenseFormProps {
+ onAdd: (expense: Expense) => void;
+}
+
+export default function ExpenseForm({ onAdd }: ExpenseFormProps) {
  const {
   register,
   handleSubmit,
@@ -34,7 +38,12 @@ export default function ExpenseForm() {
  });
 
  const onSubmit: SubmitHandler<Expense> = (data) => {
-  console.log(data);
+  const newExpense = {
+   ...data,
+   id: crypto.randomUUID(),
+   date: new Date().toISOString().split('T')[0], // YYYY-MM-DD formátum
+  };
+  onAdd(newExpense);
   reset();
  };
 
