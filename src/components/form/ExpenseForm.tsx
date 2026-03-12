@@ -17,22 +17,30 @@ import {
  SelectValue,
 } from '../ui/select';
 import { Button } from '../ui/button';
-import { Switch } from '../ui/switch';
+import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { categories } from '../../constants';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller, type SubmitHandler } from 'react-hook-form';
 import type { Expense } from '@/types/type';
 
 export default function ExpenseForm() {
  const {
   register,
   handleSubmit,
+  control,
   formState: { errors },
   reset,
- } = useForm<Expense>();
+ } = useForm<Expense>({
+  defaultValues: { category: 'Egyéb', type: 'expense' },
+ });
+
+ const onSubmit: SubmitHandler<Expense> = (data) => {
+  console.log(data);
+  reset();
+ };
 
  return (
   <div className="w-full my-8">
-   <form className="max-w-3xl mx-auto">
+   <form className="max-w-3xl mx-auto" onSubmit={handleSubmit(onSubmit)}>
     <FieldGroup>
      <FieldSet>
       <FieldLegend>Add expense and income</FieldLegend>
@@ -43,49 +51,99 @@ export default function ExpenseForm() {
          id="name"
          type="text"
          placeholder="name"
-         {...register('name', { required: true })}
+         {...register('name', {
+          required: 'Name is required',
+          minLength: {
+           value: 2,
+           message: 'Name must be at least 2 characters',
+          },
+         })}
         />
+        {errors.name && (
+         <div className="text-red-600">{errors.name.message}</div>
+        )}
        </Field>
        <Field>
         <FieldLabel htmlFor="amount">Amount:</FieldLabel>
         <Input
          id="amount"
          type="number"
-         {...register('amount', { required: true })}
+         {...register('amount', {
+          required: 'Amount is required',
+          min: { value: 0, message: 'Amount must be at least 0' },
+          valueAsNumber: true,
+         })}
         />
+        {errors.amount && (
+         <div className="text-red-600">{errors.amount.message}</div>
+        )}
        </Field>
        <Field>
         <FieldLabel htmlFor="company-name">Company name:</FieldLabel>
         <Input
          id="company-name"
          placeholder="company name"
-         {...register('company', { required: true })}
+         {...register('company', {
+          required: 'Company is required',
+          minLength: {
+           value: 2,
+           message: 'Company must be at least 2 characters',
+          },
+         })}
         />
+        {errors.company && (
+         <div className="text-red-600">{errors.company.message}</div>
+        )}
         <FieldDescription>Enter your company name</FieldDescription>
        </Field>
        <Field>
-        <FieldLabel htmlFor="checkout-exp-year-ts6">
-         Expense or Income
-        </FieldLabel>
-        <Switch id="expense" />
+        <FieldLabel>Expense or Income</FieldLabel>
+        <Controller
+         name="type"
+         control={control}
+         rules={{ required: 'Type is required' }}
+         render={({ field }) => (
+          <RadioGroup
+           value={field.value}
+           onValueChange={field.onChange}
+           className="flex gap-4"
+          >
+           <div className="flex items-center gap-2">
+            <RadioGroupItem value="expense" id="type-expense" />
+            <FieldLabel htmlFor="type-expense">Expense</FieldLabel>
+           </div>
+           <div className="flex items-center gap-2">
+            <RadioGroupItem value="income" id="type-income" />
+            <FieldLabel htmlFor="type-income">Income</FieldLabel>
+           </div>
+          </RadioGroup>
+         )}
+        />
        </Field>
 
        <Field>
         <FieldLabel htmlFor="checkout-exp-month-ts6">Category:</FieldLabel>
-        <Select defaultValue="">
-         <SelectTrigger id="checkout-exp-month-ts6">
-          <SelectValue placeholder="MM" />
-         </SelectTrigger>
-         <SelectContent>
-          <SelectGroup>
-           {categories.map((category) => (
-            <SelectItem key={category} value={category}>
-             {category}
-            </SelectItem>
-           ))}
-          </SelectGroup>
-         </SelectContent>
-        </Select>
+        <Controller
+         name="category"
+         control={control}
+         rules={{ required: 'Category is required' }}
+         render={({ field }) => (
+          <Select value={field.value} onValueChange={field.onChange}>
+           <SelectTrigger id="checkout-exp-month-ts6">
+            <SelectValue placeholder="Válassz kategóriát" />
+           </SelectTrigger>
+           <SelectContent>
+            <SelectGroup>
+             {categories.map((category) => (
+              <SelectItem key={category} value={category}>
+               {category}
+              </SelectItem>
+             ))}
+            </SelectGroup>
+           </SelectContent>
+          </Select>
+         )}
+        />
        </Field>
       </FieldGroup>
      </FieldSet>
