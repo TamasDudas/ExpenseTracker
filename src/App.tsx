@@ -1,14 +1,15 @@
 import ExpenseForm from './components/form/ExpenseForm';
-
 import reducer from './reducer';
 import { useEffect, useMemo, useReducer, useState } from 'react';
 import type { Expense } from './types/type';
 import ExpenseList from './components/ExpenseList';
 import { Button } from './components/ui/button';
+import { CancelAlertDialog } from './components/CancelAlertDialog';
 
 function App() {
  const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
  const [filtered, setFiltered] = useState<'all' | 'income' | 'expense'>('all');
+ const [deletingId, setDeletingId] = useState<string | null>(null);
 
  const [expenses, dispatch] = useReducer(
   reducer,
@@ -46,8 +47,9 @@ function App() {
   dispatch({ type: 'ADD_EXPENSE', payload: expense });
  };
 
- const handleDelete = (id: string) => {
-  dispatch({ type: 'DELETE_EXPENSE', payload: id });
+ const handleDelete = () => {
+  if (deletingId) dispatch({ type: 'DELETE_EXPENSE', payload: deletingId });
+  setDeletingId(null);
  };
 
  const handleEdit = (expense: Expense) => {
@@ -63,7 +65,12 @@ function App() {
   return filtered === value ? 'default' : 'outline';
  };
  return (
-  <div className="max-w-7xl mx-auto p-8">
+  <div className="max-w-3xl mx-auto p-8 flex flex-col items-center">
+   <CancelAlertDialog
+    open={deletingId !== null}
+    onOpenChange={(open) => !open && setDeletingId(null)}
+    onDelete={handleDelete}
+   />
    <h1 className="text-3xl font-bold underline my-12">Expense Tracker</h1>
 
    <ExpenseForm
@@ -71,26 +78,28 @@ function App() {
     editingExpense={editingExpense}
     onUpdate={handleUpdate}
    />
-   <div className="max-w-xl mx-auto ">
-    <Button variant={getVariant('all')} onClick={() => setFiltered('all')}>
-     All
-    </Button>
-    <Button
-     variant={getVariant('income')}
-     onClick={() => setFiltered('income')}
-    >
-     Income
-    </Button>
-    <Button
-     variant={getVariant('expense')}
-     onClick={() => setFiltered('expense')}
-    >
-     Expense
-    </Button>
+   <div className="w-full ">
+    <div className="flex gap-4 items-center justify-center">
+     <Button variant={getVariant('all')} onClick={() => setFiltered('all')}>
+      All
+     </Button>
+     <Button
+      variant={getVariant('income')}
+      onClick={() => setFiltered('income')}
+     >
+      Income
+     </Button>
+     <Button
+      variant={getVariant('expense')}
+      onClick={() => setFiltered('expense')}
+     >
+      Expense
+     </Button>
+    </div>
 
     <ExpenseList
      expenses={filteredExpenses}
-     onDelete={handleDelete}
+     onDelete={setDeletingId}
      onEdit={handleEdit}
     />
    </div>

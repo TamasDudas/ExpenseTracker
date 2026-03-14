@@ -16,7 +16,7 @@ export default function ExpenseList({
  return (
   <div>
    {expenses.map((expense) => (
-    <div key={expense.id} className="border p-4 mb-4 rounded">
+    <div key={expense.id} className="border p-4 my-8 rounded ">
      <h2 className="text-xl font-bold">{expense.name}</h2>
      <p>Company: {expense.company}</p>
      <p>Amount: {expense.amount}</p>
