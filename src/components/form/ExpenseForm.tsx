@@ -104,7 +104,10 @@ export default function ExpenseForm({
          type="number"
          {...register('amount', {
           required: 'Amount is required',
-          min: { value: 0, message: 'Amount must be at least 0' },
+          min: {
+           value: 0,
+           message: 'Amount must be greater than 0',
+          },
           valueAsNumber: true,
          })}
         />

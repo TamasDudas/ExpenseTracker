@@ -1,7 +1,7 @@
 import ExpenseForm from './components/form/ExpenseForm';
 
 import reducer from './reducer';
-import { useEffect, useReducer, useState } from 'react';
+import { useEffect, useMemo, useReducer, useState } from 'react';
 import type { Expense } from './types/type';
 import ExpenseList from './components/ExpenseList';
 
@@ -12,6 +12,24 @@ function App() {
   reducer,
   JSON.parse(localStorage.getItem('expenses') || '[]'),
  );
+
+ const totalExpense = useMemo(
+  () =>
+   expenses
+    .filter((expense) => expense.type === 'expense')
+    .reduce((acc, expense) => acc + expense.amount, 0),
+  [expenses],
+ );
+
+ const totalIncome = useMemo(
+  () =>
+   expenses
+    .filter((expense) => expense.type === 'income')
+    .reduce((acc, expense) => acc + expense.amount, 0),
+  [expenses],
+ );
+
+ const total = totalIncome - totalExpense;
 
  useEffect(() => {
   localStorage.setItem('expenses', JSON.stringify(expenses));
@@ -33,6 +51,10 @@ function App() {
   dispatch({ type: 'UPDATE_EXPENSE', payload: expense });
   setEditingExpense(null);
  };
+
+ console.log('Total:', total);
+ console.log('Total Expense:', totalExpense);
+ console.log('Total Income:', totalIncome);
 
  return (
   <div className="max-w-7xl mx-auto p-8">
