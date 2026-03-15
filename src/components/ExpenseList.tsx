@@ -31,7 +31,7 @@ export default function ExpenseList({
       >
        Törlés
       </Button>
-      <Button variant="ghost" size="sm" onClick={() => onEdit?.(expense)}>
+      <Button variant="outline" size="sm" onClick={() => onEdit?.(expense)}>
        Szerkesztés
       </Button>
      </div>
