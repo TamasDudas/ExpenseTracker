@@ -31,7 +31,9 @@ export function CancelAlertDialog({
     </AlertDialogHeader>
     <AlertDialogFooter>
      <AlertDialogCancel>Mégsem</AlertDialogCancel>
-     <AlertDialogAction onClick={onDelete}>Törlés</AlertDialogAction>
+     <AlertDialogAction onClick={onDelete} className="bg-red-500">
+      Törlés
+     </AlertDialogAction>
     </AlertDialogFooter>
    </AlertDialogContent>
   </AlertDialog>

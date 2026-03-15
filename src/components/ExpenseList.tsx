@@ -23,15 +23,15 @@ export default function ExpenseList({
      <p>Date: {expense.date}</p>
      <p>Category: {expense.category}</p>
      <p>Type: {expense.type}</p>
-     <div className="mt-8">
+     <div className="mt-8 flex gap-4">
       <Button
-       variant="outline"
+       variant="destructive"
        size="sm"
        onClick={() => onDelete?.(expense.id)}
       >
        Törlés
       </Button>
-      <Button variant="outline" size="sm" onClick={() => onEdit?.(expense)}>
+      <Button variant="ghost" size="sm" onClick={() => onEdit?.(expense)}>
        Szerkesztés
       </Button>
      </div>

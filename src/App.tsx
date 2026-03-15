@@ -5,11 +5,13 @@ import type { Expense } from './types/type';
 import ExpenseList from './components/ExpenseList';
 import { Button } from './components/ui/button';
 import { CancelAlertDialog } from './components/CancelAlertDialog';
+import { set } from 'react-hook-form';
 
 function App() {
  const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
  const [filtered, setFiltered] = useState<'all' | 'income' | 'expense'>('all');
  const [deletingId, setDeletingId] = useState<string | null>(null);
+ const [showForm, setShowForm] = useState(false);
 
  const [expenses, dispatch] = useReducer(
   reducer,
@@ -53,6 +55,7 @@ function App() {
  };
 
  const handleEdit = (expense: Expense) => {
+  setShowForm(true);
   setEditingExpense(expense);
  };
 
@@ -71,6 +74,11 @@ function App() {
    : filtered === 'income'
      ? totalIncome
      : -totalExpense;
+
+ const handleShowForm = () => {
+  setShowForm((prev) => !prev);
+  setEditingExpense(null);
+ };
  return (
   <div className="max-w-3xl mx-auto p-8 flex flex-col items-center">
    <CancelAlertDialog
@@ -79,14 +87,18 @@ function App() {
     onDelete={handleDelete}
    />
    <h1 className="text-3xl font-bold underline my-12">Expense Tracker</h1>
-
-   <ExpenseForm
-    onAdd={handleAddExpense}
-    editingExpense={editingExpense}
-    onUpdate={handleUpdate}
-   />
+   <Button onClick={handleShowForm}>
+    {showForm ? 'Hide Form' : 'Add New Expense'}
+   </Button>
+   {showForm && (
+    <ExpenseForm
+     onAdd={handleAddExpense}
+     editingExpense={editingExpense}
+     onUpdate={handleUpdate}
+    />
+   )}
    <div className="w-full ">
-    <div className="flex gap-4 items-center justify-center">
+    <div className="flex gap-4 items-center justify-center mt-8">
      <Button variant={getVariant('all')} onClick={() => setFiltered('all')}>
       All
      </Button>
@@ -104,7 +116,16 @@ function App() {
      </Button>
     </div>
     <div className="flex justify-center gap-8 mt-4">
-     <p>Total: {displayTotal} Ft</p>
+     <p>
+      Total:{' '}
+      <span
+       className={`${
+        displayTotal > 0 ? 'bg-green-500 ' : 'bg-red-500 '
+       }text-white px-4 py-1 rounded-4xl`}
+      >
+       {new Intl.NumberFormat('hu-HU').format(displayTotal)} FT
+      </span>
+     </p>
     </div>
    </div>
    <div className="w-full">
