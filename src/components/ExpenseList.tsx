@@ -16,14 +16,21 @@ export default function ExpenseList({
  return (
   <div>
    {expenses.map((expense) => (
-    <div key={expense.id} className="border p-4 my-8 rounded ">
-     <h2 className="text-xl font-bold">{expense.name}</h2>
-     <p>Company: {expense.company}</p>
-     <p>Amount: {expense.amount}</p>
-     <p>Date: {expense.date}</p>
-     <p>Category: {expense.category}</p>
-     <p>Type: {expense.type}</p>
-     <div className="mt-8 flex gap-4">
+    <div
+     key={expense.id}
+     className="border p-4 my-8 rounded flex flex-col justify-center items-center "
+    >
+     <div className="flex items-center gap-4">
+      <h2 className="text-xl font-bold">{expense.name}</h2>
+      <p>Company: {expense.company}</p>
+     </div>
+     <div className="flex flex-col gap-4 my-8 justify-center items-center">
+      <p>Amount: {expense.amount}</p>
+      <p>Date: {expense.date}</p>
+      <p>Category: {expense.category}</p>
+      <p>Type: {expense.type}</p>
+     </div>
+     <div className="flex gap-4">
       <Button
        variant="destructive"
        size="sm"
