@@ -64,6 +64,13 @@ function App() {
  const getVariant = (value: 'all' | 'income' | 'expense') => {
   return filtered === value ? 'default' : 'outline';
  };
+
+ const displayTotal =
+  filtered === 'all'
+   ? total
+   : filtered === 'income'
+     ? totalIncome
+     : -totalExpense;
  return (
   <div className="max-w-3xl mx-auto p-8 flex flex-col items-center">
    <CancelAlertDialog
@@ -96,12 +103,20 @@ function App() {
       Expense
      </Button>
     </div>
-
-    <ExpenseList
-     expenses={filteredExpenses}
-     onDelete={setDeletingId}
-     onEdit={handleEdit}
-    />
+    <div className="flex justify-center gap-8 mt-4">
+     <p>Total: {displayTotal} Ft</p>
+    </div>
+   </div>
+   <div className="w-full">
+    {filteredExpenses.length === 0 ? (
+     <p className="text-center mt-8">{`No ${filtered} found.`}</p>
+    ) : (
+     <ExpenseList
+      expenses={filteredExpenses}
+      onDelete={setDeletingId}
+      onEdit={handleEdit}
+     />
+    )}
    </div>
   </div>
  );
