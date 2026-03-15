@@ -1,73 +1,59 @@
-# React + TypeScript + Vite
+# Expense Tracker
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Egy egyszerű bevétel- és kiadáskövetős alkalmazás, amit React tanuláshoz készítettem.
 
-Currently, two official plugins are available:
+## Funkciók
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Kiadás és bevétel hozzáadása (név, összeg, cég, kategória)
+- Tételek szerkesztése és törlése
+- Szűrés: összes / bevétel / kiadás
+- Aktuális egyenleg megjelenítése (zöld ha pozitív, piros ha negatív)
+- Adatok mentése böngészőbe (localStorage), így frissítés után sem vesznek el
 
-## React Compiler
+## Technológiák
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **React 19** – UI felépítése
+- **TypeScript** – típusbiztos kód
+- **Vite** – gyors fejlesztői szerver és build eszköz
+- **Tailwind CSS v4** – stílusok
+- **shadcn/ui** – előre elkészített UI komponensek (Button, Dialog, Select stb.)
+- **React Hook Form** – form kezelés és validáció
+- **Sonner** – toast értesítések
+- **useReducer** – állapotkezelés
 
-## Expanding the ESLint configuration
+## Indítás
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+```bash
+# Függőségek telepítése
+npm install
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# Fejlesztői szerver indítása
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Az alkalmazás elérhető lesz: `http://localhost:5173`
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Egyéb parancsok
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run build    # Production build készítése
+npm run preview  # Build előnézete lokálisan
+npm run lint     # ESLint futtatása
+```
+
+## Projekt struktúra
+
+```
+src/
+├── components/
+│   ├── form/
+│   │   └── ExpenseForm.tsx   # Kiadás/bevétel hozzáadása és szerkesztése
+│   ├── ui/                   # shadcn/ui komponensek
+│   ├── ExpenseList.tsx       # Tételek listája
+│   └── CancelAlertDialog.tsx # Törlés megerősítő dialógus
+├── types/
+│   └── type.ts               # TypeScript típusok
+├── reducer.ts                # useReducer logika (add, update, delete)
+├── constants.ts              # Kategóriák listája
+└── App.tsx                   # Fő komponens
 ```

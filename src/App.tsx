@@ -122,11 +122,11 @@ function App() {
     </div>
     <div className="flex justify-center gap-8 mt-4">
      <p>
-      Total:{' '}
+      Total:
       <span
        className={`${
         displayTotal > 0 ? 'bg-green-500 ' : 'bg-red-500 '
-       }text-white px-4 py-1 rounded-4xl`}
+       }text-white px-4 py-1 rounded-4xl ml-2`}
       >
        {new Intl.NumberFormat('hu-HU').format(displayTotal)} FT
       </span>
