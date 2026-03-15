@@ -24,14 +24,16 @@ import type { Expense } from '@/types/type';
 import { useEffect } from 'react';
 
 interface ExpenseFormProps {
- onAdd: (expense: Expense) => void;
- onUpdate: (expense: Expense) => void;
+ onAdd?: (expense: Expense) => void;
+ onUpdate?: (expense: Expense) => void;
+ onCancel?: () => void;
  editingExpense?: Expense | null;
 }
 
 export default function ExpenseForm({
  onAdd,
  onUpdate,
+ onCancel,
  editingExpense,
 }: ExpenseFormProps) {
  const isEditing = !!editingExpense;
@@ -53,9 +55,9 @@ export default function ExpenseForm({
    date: new Date().toISOString().split('T')[0], // YYYY-MM-DD formátum
   };
   if (!isEditing) {
-   onAdd(newExpense);
+   onAdd?.(newExpense);
   } else {
-   onUpdate({ ...newExpense, id: editingExpense?.id });
+   onUpdate?.({ ...newExpense, id: editingExpense?.id });
   }
   reset();
  };
@@ -187,7 +189,7 @@ export default function ExpenseForm({
 
      <Field orientation="horizontal">
       <Button type="submit">{isEditing ? 'Update' : 'Submit'}</Button>
-      <Button variant="outline" type="button">
+      <Button variant="outline" type="button" onClick={onCancel}>
        Cancel
       </Button>
      </Field>

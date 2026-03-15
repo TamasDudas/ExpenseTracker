@@ -7,12 +7,19 @@ import { Button } from './components/ui/button';
 import { CancelAlertDialog } from './components/CancelAlertDialog';
 import { toast } from 'sonner';
 import { Toaster } from './components/ui/sonner';
+import {
+ Dialog,
+ DialogContent,
+ DialogHeader,
+ DialogTitle,
+} from './components/ui/dialog';
 
 function App() {
  const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
  const [filtered, setFiltered] = useState<'all' | 'income' | 'expense'>('all');
  const [deletingId, setDeletingId] = useState<string | null>(null);
  const [showForm, setShowForm] = useState(false);
+ const [editDialogOpen, setEditDialogOpen] = useState(false);
 
  const [expenses, dispatch] = useReducer(
   reducer,
@@ -58,13 +65,14 @@ function App() {
  };
 
  const handleEdit = (expense: Expense) => {
-  setShowForm(true);
+  setEditDialogOpen(true);
   setEditingExpense(expense);
  };
 
  const handleUpdate = (expense: Expense) => {
   dispatch({ type: 'UPDATE_EXPENSE', payload: expense });
   setEditingExpense(null);
+  setEditDialogOpen(false);
   toast.success('Expense updated successfully!', { position: 'top-right' });
  };
 
@@ -77,7 +85,7 @@ function App() {
    ? total
    : filtered === 'income'
      ? totalIncome
-     : -totalExpense;
+     : -totalExpense || 0;
 
  const handleShowForm = () => {
   setShowForm((prev) => !prev);
@@ -95,13 +103,34 @@ function App() {
    <Button onClick={handleShowForm}>
     {showForm ? 'Hide Form' : 'Add New Expense'}
    </Button>
-   {showForm && (
-    <ExpenseForm
-     onAdd={handleAddExpense}
-     editingExpense={editingExpense}
-     onUpdate={handleUpdate}
-    />
-   )}
+   {showForm && !editDialogOpen && <ExpenseForm onAdd={handleAddExpense} />}
+
+   <Dialog
+    open={editDialogOpen}
+    onOpenChange={(open) => {
+     setEditDialogOpen(open);
+     if (!open) setEditingExpense(null);
+    }}
+   >
+    <DialogContent
+     aria-describedby={undefined}
+     className="max-h-[calc(100vh-4rem)] overflow-y-auto"
+    >
+     <DialogHeader>
+      <DialogTitle>Edit Expense</DialogTitle>
+     </DialogHeader>
+     <ExpenseForm
+      editingExpense={editingExpense}
+      onUpdate={handleUpdate}
+      onCancel={() => {
+       setEditDialogOpen(false);
+       setEditingExpense(null);
+      }}
+     />
+     {/* A Cancel gombra kattintva bezárjuk a dialogot és töröljük az editingExpense értékét */}
+    </DialogContent>
+   </Dialog>
+
    <div className="w-full ">
     <div className="flex gap-4 items-center justify-center mt-8">
      <Button variant={getVariant('all')} onClick={() => setFiltered('all')}>
@@ -125,10 +154,17 @@ function App() {
       Total:
       <span
        className={`${
-        displayTotal > 0 ? 'bg-green-500 ' : 'bg-red-500 '
+        displayTotal > 0
+         ? 'bg-green-500 '
+         : displayTotal < 0
+           ? 'bg-red-500 '
+           : 'bg-gray-500 '
        }text-white px-4 py-1 rounded-4xl ml-2`}
       >
-       {new Intl.NumberFormat('hu-HU').format(displayTotal)} FT
+       {new Intl.NumberFormat('hu-HU', { useGrouping: true }).format(
+        displayTotal,
+       )}{' '}
+       Ft
       </span>
      </p>
     </div>
