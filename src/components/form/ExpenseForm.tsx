@@ -56,7 +56,6 @@ export default function ExpenseForm({
    onAdd(newExpense);
   } else {
    onUpdate({ ...newExpense, id: editingExpense?.id });
-   reset(newExpense);
   }
   reset();
  };

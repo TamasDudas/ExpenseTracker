@@ -5,7 +5,8 @@ import type { Expense } from './types/type';
 import ExpenseList from './components/ExpenseList';
 import { Button } from './components/ui/button';
 import { CancelAlertDialog } from './components/CancelAlertDialog';
-import { set } from 'react-hook-form';
+import { toast } from 'sonner';
+import { Toaster } from './components/ui/sonner';
 
 function App() {
  const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
@@ -47,11 +48,13 @@ function App() {
 
  const handleAddExpense = (expense: Expense) => {
   dispatch({ type: 'ADD_EXPENSE', payload: expense });
+  toast.success('Expense added successfully!', { position: 'top-right' });
  };
 
  const handleDelete = () => {
   if (deletingId) dispatch({ type: 'DELETE_EXPENSE', payload: deletingId });
   setDeletingId(null);
+  toast.success('Expense deleted successfully!', { position: 'top-right' });
  };
 
  const handleEdit = (expense: Expense) => {
@@ -62,6 +65,7 @@ function App() {
  const handleUpdate = (expense: Expense) => {
   dispatch({ type: 'UPDATE_EXPENSE', payload: expense });
   setEditingExpense(null);
+  toast.success('Expense updated successfully!', { position: 'top-right' });
  };
 
  const getVariant = (value: 'all' | 'income' | 'expense') => {
@@ -81,6 +85,7 @@ function App() {
  };
  return (
   <div className="max-w-3xl mx-auto p-8 flex flex-col items-center">
+   <Toaster />
    <CancelAlertDialog
     open={deletingId !== null}
     onOpenChange={(open) => !open && setDeletingId(null)}
