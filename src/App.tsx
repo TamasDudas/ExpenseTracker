@@ -13,6 +13,7 @@ import {
  DialogHeader,
  DialogTitle,
 } from './components/ui/dialog';
+import { set } from 'react-hook-form';
 
 function App() {
  const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
@@ -103,7 +104,15 @@ function App() {
    <Button onClick={handleShowForm}>
     {showForm ? 'Hide Form' : 'Add New Expense'}
    </Button>
-   {showForm && !editDialogOpen && <ExpenseForm onAdd={handleAddExpense} />}
+   {showForm && !editDialogOpen && (
+    <ExpenseForm
+     onAdd={handleAddExpense}
+     onCancel={() => {
+      setShowForm(false);
+      setEditingExpense(null);
+     }}
+    />
+   )}
 
    <Dialog
     open={editDialogOpen}
